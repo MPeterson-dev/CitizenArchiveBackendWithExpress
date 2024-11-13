@@ -1,0 +1,17 @@
+Create new schema named: citizenarchivetable
+
+SQL statements:
+CREATE TABLE subjects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    icon VARCHAR(255),
+    topic_count INT DEFAULT 0
+);
+
+Too add emojis:
+ALTER TABLE subjects MODIFY icon VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+INSERT INTO subjects (title, icon, topic_count) VALUES
+('Science', '🔬', 15),
+('Math', '📐', 10),
+('History', '📜', 8);
