@@ -1,17 +1,27 @@
 Create new schema named: citizenarchivetable
 
-SQL statements:
+Subjects Table:
 CREATE TABLE subjects (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    icon VARCHAR(255),
-    topic_count INT DEFAULT 0
+    icon VARCHAR(255)
 );
 
-Too add emojis:
-ALTER TABLE subjects MODIFY icon VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+Topics Table:
+CREATE TABLE Topics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    subject_id INT NOT NULL,
+    FOREIGN KEY (subject_id) REFERENCES Subjects(id) ON DELETE CASCADE
+);
 
-INSERT INTO subjects (title, icon, topic_count) VALUES
-('Science', '🔬', 15),
-('Math', '📐', 10),
-('History', '📜', 8);
+Dynamic Topic Count:
+SELECT 
+    Subjects.id, 
+    Subjects.title, 
+    COUNT(Topics.id) AS topic_count
+FROM Subjects
+LEFT JOIN Topics ON Topics.subject_id = Subjects.id
+GROUP BY Subjects.id;
+
