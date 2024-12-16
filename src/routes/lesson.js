@@ -1,11 +1,12 @@
-const express = require('express'); 
-const router = express.Router(); 
+const express = require('express');
+const router = express.Router();
 const db = require('../db');
 
+// Route to fetch lessons for a specific topic
 router.get('/:topicId', (req, res) => {
     const { topicId } = req.params;
     console.log(`Fetching lessons for topic ID: ${topicId}`);
-    
+
     const sql = `
         SELECT lessons.id, lessons.title, lessons.description, lessons.video_url
         FROM lessons
