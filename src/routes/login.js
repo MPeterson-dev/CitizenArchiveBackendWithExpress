@@ -1,27 +1,44 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../db');
-const bcrypt = require('bcryptjs');
+const express = require('express'); 
+const router = express.Router();    
+const db = require('../db');        
+const bcrypt = require('bcryptjs'); 
+
 
 router.post('/', (req, res) => {
     const { email, password } = req.body;
+    console.log("Login attempt for email:", email);
+
     const sql = 'SELECT * FROM users WHERE email = ?';
-
     db.query(sql, [email], async (err, results) => {
-        if (err) return res.status(500).json({ error: 'Database error' });
-        if (results.length === 0) return res.status(401).json({ error: 'Invalid credentials' });
-        const user = results[0];
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) return res.status(401).json({ error: 'Invalid credentials' });
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        if (results.length === 0) {
+            console.log("No user found for email:", email);
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
 
-        res.json({
-            token: 'your_generated_token_here',
-            user: {
-                id: user.id,
-                email: user.email,
-                isAdmin: user.is_admin
-            }
-        });
+        const user = results[0];
+        console.log("User found:", user);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log("Password valid:", isPasswordValid);
+
+        if (isPasswordValid) {
+            console.log("Password valid:", isPasswordValid);    
+            return res.status(200).json({
+                success: true,
+                message: 'Login successful',
+                user: {
+                    id: user.id,
+                    email: user.email,
+                    isAdmin: user.is_admin
+                }
+            });
+        }else{
+            console.log("Password mismatch for email:", email);
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
     });
 });
 
